@@ -214,6 +214,7 @@ CREATE TABLE EMPLOYEE (
     EMP_CITY VARCHAR(100),
     EMP_STATE VARCHAR(100),
     EMP_ZIPCODE VARCHAR(20),
+    FM_ID employee_skill
 );
 
 # INSERTING VALUES INTO EMPLOYEE TABLE
@@ -423,48 +424,6 @@ VALUES
     
 # CREATING CATEGORY TABLE
 DROP TABLE IF EXISTS CATEGORY;
-CREATE TABLE CATEGORY (
-    CAT_ID INT PRIMARY KEY,
-    CAT_NAME VARCHAR(100),
-    FM_ID INT,
-    FOREIGN KEY (FM_ID) REFERENCES FM_DEPARTMENT(FM_ID)
-);
-
-# INSERT VALUES INTO CATEGORY TABLE
-INSERT INTO CATEGORY (CAT_ID, CAT_NAME, FM_ID)
-VALUES
-    (1, 'Maintenance', 301),
-    (2, 'Repair', 302),
-    (3, 'Security', 303),
-    (4, 'Landscaping', 304),
-    (5, 'Emergency Response', 305),
-    (6, 'Electrical Systems', 306),
-    (7, 'HVAC Systems', 307),
-    (8, 'Plumbing Systems', 308),
-    (9, 'Fire Safety', 309),
-    (10, 'Building Exterior', 310),
-    (11, 'Building Interior', 311),
-    (12, 'Water Systems', 312),
-    (13, 'Sanitary Systems', 313),
-    (14, 'Mechanical Systems', 314),
-    (15, 'Parking Facilities', 315),
-    (16, 'Road Maintenance', 316),
-    (17, 'Storm Sewer Systems', 317),
-    (18, 'Lighting Systems', 318),
-    (19, 'Waste Management', 319),
-    (20, 'Emergency Preparedness', 320),
-    (21, 'Budget Management', 321),
-    (22, 'Contract Management', 322),
-    (23, 'Regulatory Compliance', 323),
-    (24, 'Risk Assessment', 324),
-    (25, 'Customer Service', 325),
-    (26, 'Project Management', 326),
-    (27, 'Quality Assurance', 327),
-    (28, 'Health and Safety Compliance', 328),
-    (29, 'Team Leadership', 329),
-    (30, 'Communication Skills', 330);
-    
-
 
 # CREATING TASK TABLE
 DROP TABLE IF EXISTS TASK;
@@ -473,51 +432,48 @@ CREATE TABLE TASK (
     REQ_ID INT,
     ASSGND_BY_EMP_ID INT,
     ASSGND_TO_EMP_ID INT, 
-    CAT_ID INT,
+    FM_ID INT,
     TASK_DESC TEXT,
     TASK_SEVERITY VARCHAR(20),
     TASK_STATUS VARCHAR(20),
     TASK_STARTDT DATE,
     TASK_ENDDT DATE,
-   FOREIGN KEY (REQ_ID) REFERENCES REQUESTOR(REQ_ID),
-    FOREIGN KEY (ASSGND_BY_EMP_ID) REFERENCES EMPLOYEE(EMP_ID),
-    FOREIGN KEY (ASSGND_TO_EMP_ID) REFERENCES EMPLOYEE(EMP_ID),
-    FOREIGN KEY (CAT_ID) REFERENCES CATEGORY(CAT_ID)
+    FOREIGN KEY (REQ_ID) REFERENCES REQUESTOR(REQ_ID)
 );
 
 # INSERT VALUES INTO TASK TABLE
-INSERT INTO TASK (TASK_ID, REQ_ID, ASSGND_BY_EMP_ID, ASSGND_TO_EMP_ID, CAT_ID, TASK_DESC, TASK_SEVERITY, TASK_STATUS, TASK_STARTDT, TASK_ENDDT)
+INSERT INTO TASK (TASK_ID, REQ_ID, ASSGND_BY_EMP_ID, ASSGND_TO_EMP_ID, FM_ID, TASK_DESC, TASK_SEVERITY, TASK_STATUS, TASK_STARTDT, TASK_ENDDT)
 VALUES
-    (1, 1, 201, 207, 1, 'Inspect and repair HVAC system in building A', 'High', 'Open', '2024-03-21', NULL),
-    (2, 2, 202, 214, 2, 'Fix plumbing issue in restroom on the 2nd floor', 'Medium', 'In Progress', '2024-03-20', NULL),
-    (3, 3, 203, 219, 3, 'Mow lawn and trim trees in the campus garden', 'Low', 'Completed', '2024-03-19', '2024-03-19'),
-    (4, 4, 204, 209, 4, 'Test fire alarm systems in all buildings', 'High', 'Open', '2024-03-18', NULL),
-    (5, 5, 205, 229, 5, 'Address security issue in parking lot C', 'High', 'In Progress', '2024-03-17', NULL),
-    (6, 6, 206, 228, 6, 'Repair electrical wiring in room 101', 'Medium', 'Completed', '2024-03-16', '2024-03-16'),
-    (7, 7, 207, 226, 7, 'Install new lighting fixtures in the hallway', 'Low', 'Open', '2024-03-15', NULL),
-    (8, 8, 208, 224, 8, 'Inspect storm sewer systems on campus', 'Medium', 'In Progress', '2024-03-14', NULL),
-    (9, 9, 209, 208, 9, 'Paint exterior walls of building B', 'Medium', 'Completed', '2024-03-13', '2024-03-13'),
-    (10, 10, 210, 202, 10, 'Repair leaking pipes in the basement', 'High', 'Open', '2024-03-12', NULL),
-    (11, 11, 211, 209, 1, 'Replace HVAC filters in building C', 'Low', 'Completed', '2024-03-11', '2024-03-11'),
-    (12, 12, 212, 207, 2, 'Unclog drains in restroom on the 3rd floor', 'Medium', 'In Progress', '2024-03-10', NULL),
-    (13, 13, 213, 206, 3, 'Prune trees near the entrance gate', 'Low', 'Completed', '2024-03-09', '2024-03-09'),
-    (14, 14, 214, 206, 4, 'Test fire extinguishers in all classrooms', 'High', 'Open', '2024-03-08', NULL),
-    (15, 15, 215, 207, 5, 'Investigate vandalism report near the library', 'High', 'In Progress', '2024-03-07', NULL),
-    (16, 16, 216, 214, 6, 'Replace faulty light switches in the gymnasium', 'Medium', 'Completed', '2024-03-06', '2024-03-06'),
-    (17, 17, 217, 219, 7, 'Upgrade emergency exit signs in the auditorium', 'Low', 'Open', '2024-03-05', NULL),
-    (18, 18, 218, 214, 8, 'Clean storm drains along the main road', 'Medium', 'In Progress', '2024-03-04', NULL),
-    (19, 19, 219, 219, 9, 'Touch up paint on benches in the park', 'Low', 'Completed', '2024-03-03', '2024-03-03'),
-    (20, 20, 220, 214, 10, 'Repair broken sidewalk near the cafeteria', 'High', 'Open', '2024-03-02', NULL),
-    (21, 21, 221, 219, 1, 'Inspect and repair heating system in the gym', 'High', 'Open', '2024-03-01', NULL),
-    (22, 22, 222, 214, 2, 'Fix leaking faucet in the administrative office', 'Medium', 'In Progress', '2024-02-29', NULL),
-    (23, 23, 223, 219, 3, 'Mow lawn and trim bushes around the library', 'Low', 'Completed', '2024-02-28', '2024-02-28'),
-    (24, 24, 224, 224, 4, 'Test emergency lighting in the lecture halls', 'High', 'Open', '2024-02-27', NULL),
-    (25, 25, 225, 229, 5, 'Investigate strange odor in the chemistry lab', 'High', 'In Progress', '2024-02-26', NULL),
-    (26, 26, 226, 204, 6, 'Replace burnt-out bulbs in the parking garage', 'Medium', 'Completed', '2024-02-25', '2024-02-25'),
-    (27, 27, 227, 209, 7, 'Install new HVAC filters in the cafeteria', 'Low', 'Open', '2024-02-24', NULL),
-    (28, 28, 228, 204, 8, 'Clean gutters on the dormitory buildings', 'Medium', 'In Progress', '2024-02-23', NULL),
-    (29, 29, 229, 209, 9, 'Repaint crosswalk lines on campus roads', 'Low', 'Completed', '2024-02-22', '2024-02-22'),
-    (30, 30, 230, 204, 10, 'Repair damaged fence around the athletic field', 'High', 'Open', '2024-02-21', NULL);
+    (1, 1, 201, 207, 301, 'Inspect and repair HVAC system in building A', 'High', 'Open', '2024-03-21', NULL),
+    (2, 2, 202, 214, 302, 'Fix plumbing issue in restroom on the 2nd floor', 'Medium', 'In Progress', '2024-03-20', NULL),
+    (3, 3, 203, 219, 303, 'Mow lawn and trim trees in the campus garden', 'Low', 'Completed', '2024-03-19', '2024-03-19'),
+    (4, 4, 204, 209, 304, 'Test fire alarm systems in all buildings', 'High', 'Open', '2024-03-18', NULL),
+    (5, 5, 205, 229, 305, 'Address security issue in parking lot C', 'High', 'In Progress', '2024-03-17', NULL),
+    (6, 6, 206, 228, 306, 'Repair electrical wiring in room 101', 'Medium', 'Completed', '2024-03-16', '2024-03-16'),
+    (7, 7, 207, 226, 307, 'Install new lighting fixtures in the hallway', 'Low', 'Open', '2024-03-15', NULL),
+    (8, 8, 208, 224, 308, 'Inspect storm sewer systems on campus', 'Medium', 'In Progress', '2024-03-14', NULL),
+    (9, 9, 209, 208, 309, 'Paint exterior walls of building B', 'Medium', 'Completed', '2024-03-13', '2024-03-13'),
+    (10, 10, 210, 202, 301, 'Repair leaking pipes in the basement', 'High', 'Open', '2024-03-12', NULL),
+    (11, 11, 211, 209, 301, 'Replace HVAC filters in building C', 'Low', 'Completed', '2024-03-11', '2024-03-11'),
+    (12, 12, 212, 207, 301, 'Unclog drains in restroom on the 3rd floor', 'Medium', 'In Progress', '2024-03-10', NULL),
+    (13, 13, 213, 206, 301, 'Prune trees near the entrance gate', 'Low', 'Completed', '2024-03-09', '2024-03-09'),
+    (14, 14, 214, 206, 301, 'Test fire extinguishers in all classrooms', 'High', 'Open', '2024-03-08', NULL),
+    (15, 15, 215, 207, 302, 'Investigate vandalism report near the library', 'High', 'In Progress', '2024-03-07', NULL),
+    (16, 16, 216, 214, 302, 'Replace faulty light switches in the gymnasium', 'Medium', 'Completed', '2024-03-06', '2024-03-06'),
+    (17, 17, 217, 219, 302, 'Upgrade emergency exit signs in the auditorium', 'Low', 'Open', '2024-03-05', NULL),
+    (18, 18, 218, 214, 302, 'Clean storm drains along the main road', 'Medium', 'In Progress', '2024-03-04', NULL),
+    (19, 19, 219, 219, 302, 'Touch up paint on benches in the park', 'Low', 'Completed', '2024-03-03', '2024-03-03'),
+    (20, 20, 220, 214, 302, 'Repair broken sidewalk near the cafeteria', 'High', 'Open', '2024-03-02', NULL),
+    (21, 21, 221, 219, 302, 'Inspect and repair heating system in the gym', 'High', 'Open', '2024-03-01', NULL),
+    (22, 22, 222, 214, 303, 'Fix leaking faucet in the administrative office', 'Medium', 'In Progress', '2024-02-29', NULL),
+    (23, 23, 223, 219, 303, 'Mow lawn and trim bushes around the library', 'Low', 'Completed', '2024-02-28', '2024-02-28'),
+    (24, 24, 224, 224, 303, 'Test emergency lighting in the lecture halls', 'High', 'Open', '2024-02-27', NULL),
+    (25, 25, 225, 229, 303, 'Investigate strange odor in the chemistry lab', 'High', 'In Progress', '2024-02-26', NULL),
+    (26, 26, 226, 204, 304, 'Replace burnt-out bulbs in the parking garage', 'Medium', 'Completed', '2024-02-25', '2024-02-25'),
+    (27, 27, 227, 209, 304, 'Install new HVAC filters in the cafeteria', 'Low', 'Open', '2024-02-24', NULL),
+    (28, 28, 228, 204, 304, 'Clean gutters on the dormitory buildings', 'Medium', 'In Progress', '2024-02-23', NULL),
+    (29, 29, 229, 209, 304, 'Repaint crosswalk lines on campus roads', 'Low', 'Completed', '2024-02-22', '2024-02-22'),
+    (30, 30, 230, 204, 304, 'Repair damaged fence around the athletic field', 'High', 'Open', '2024-02-21', NULL);
 
 # CREATING TASK UPDATE TABLE
 DROP TABLE IF EXISTS TASK_UPDATE;
@@ -565,17 +521,10 @@ VALUES
     (1029, 29, 229, 'Responded to water leak and repaired damaged pipes.', '2024-02-22'),
     (1030, 30, 230, 'Conducted preventive maintenance on chilled water systems.', '2024-02-21');
 
-ALTER TABLE TASK
-ADD COLUMN ASSGND_BY_EMP_ID INT NULL,
-ADD COLUMN ASSGND_TO_EMP_ID INT NULL; 
-
-ALTER TABLE TASK
-ADD FOREIGN KEY (REQ_ID) REFERENCES REQUESTOR(REQ_ID),
-ADD FOREIGN KEY (CAT_ID) REFERENCES CATEGORY(CAT_ID);
-
 
 ALTER TABLE requestor
 ADD COLUMN BUILD_ID int,
 ADD COLUMN FLOOR_ID int,
 ADD FOREIGN KEY (BUILD_ID) REFERENCES building(BUILD_ID),
 ADD FOREIGN KEY (FLOOR_ID) REFERENCES floor(FLOOR_ID);
+
