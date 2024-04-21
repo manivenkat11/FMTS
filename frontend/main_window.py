@@ -8,52 +8,40 @@ from frontend.employee_manager import EmployeeManagerInterface
 from frontend.employee import EmployeeTaskInterface
 
 class RequestForm(tk.Frame):
+     
     def __init__(self, parent):
-        super().__init__(parent, bg='#f0f0f0')  # Light gray background
-        # Initialize the database connection
+        super().__init__(parent, bg='#f0f0f0')
         self.db_connection = create_db_connection()
-        print("Database connection established successfully!")
         self.create_widgets()
 
     def create_widgets(self):
-        # Title
-        title = tk.Label(self, text="Submit a New Request", font=("Helvetica", 16), bg='#f0f0f0')
-        title.grid(row=0, column=0, columnspan=2, pady=20)
+        header = tk.Label(self, text="CMU Facilities Management", bg='#003366', fg='white', font=("Helvetica", 18))
+        header.pack(fill='x')
 
-        # Room ID Dropdown
+        title = tk.Label(self, text="Submit a New Request", font=("Helvetica", 16), bg='#f0f0f0')
+        title.pack(pady=(20, 10))
+
         self.room_id_var = tk.StringVar(self)
-        room_id_label = tk.Label(self, text="Room ID:", bg='#f0f0f0', anchor='w', width=20)
-        room_id_label.grid(row=1, column=0, padx=10, pady=5, sticky='w')
-        self.room_id_dropdown = ttk.Combobox(self, textvariable=self.room_id_var, state='readonly', width=47)
-        self.room_id_dropdown.grid(row=1, column=1, padx=10, pady=5, sticky='ew')
+        ttk.Label(self, text="Room ID:").pack()
+        self.room_id_dropdown = ttk.Combobox(self, textvariable=self.room_id_var, state='readonly')
+        self.room_id_dropdown.pack(fill='x', padx=20, pady=(10, 5))
+        # Set the default value for the Combobox
         self.fetch_room_ids()
 
-        # Form fields
         fields = ['Global ID', 'First Name', 'Last Name', 'Email', 'Phone']
-        self.entries = {}
-        self.entries["Room ID"] = self.room_id_var
-        # Adjust the starting row index for fields to avoid overlap with Room ID Dropdown
-        start_row_index = 2
-        for idx, field in enumerate(fields):
-            label = tk.Label(self, text=f"{field}:", bg='#f0f0f0', anchor='w', width=20)
-            label.grid(row=idx + start_row_index, column=0, padx=10, pady=5, sticky='w')
-            entry = tk.Entry(self, width=50, relief='ridge', bd=2)  # Slightly rounded and increased width
-            entry.grid(row=idx + start_row_index, column=1, padx=10, pady=5, sticky='ew')
-            self.entries[field] = entry
+        self.entries = {field: ttk.Entry(self, font=('Helvetica', 14)) for field in fields}
+        for field, entry in self.entries.items():
+            ttk.Label(self, text=f"{field}:").pack()
+            entry.pack(fill='x', padx=20, pady=(10, 5))  
 
-        # Description field as a Text widget
-        desc_label = tk.Label(self, text="Description:", bg='#f0f0f0', anchor='w', width=20)
-        desc_label.grid(row=len(fields) + start_row_index, column=0, padx=10, pady=5, sticky='w')
-        self.desc_text = tk.Text(self, height=5, width=50, relief='ridge', bd=2)  # Slightly rounded and increased width
-        self.desc_text.grid(row=len(fields) + start_row_index, column=1, padx=10, pady=5, sticky='ew')
+        ttk.Label(self, text="Description:").pack()
+        self.desc_text = tk.Text(self, height=5)
+        self.desc_text.pack(fill='x', padx=20, pady=5)
 
-        # Create Request Button with style
-        submit_button = ttk.Button(self, text="Create Request", command=self.create_request, style='Primary.TButton')
-        submit_button.grid(row=len(fields) + start_row_index + 1, column=0, padx=5, pady=20)
-        
-        # Clear Form Button
-        clear_button = ttk.Button(self, text="Clear Form", command=self.clear_form, style='Secondary.TButton')
-        clear_button.grid(row=len(fields) + start_row_index + 1, column=1, padx=5, pady=20)
+        button_frame = tk.Frame(self, bg='#f0f0f0')
+        button_frame.pack(fill='x', pady=20)
+        ttk.Button(button_frame, text="Create Request", command=self.create_request).pack(side='left', padx=10, expand=True)
+        ttk.Button(button_frame, text="Clear Form", command=self.clear_form).pack(side='right', padx=10, expand=True)
 
     def create_request(self):
         if self.validate_form():
@@ -85,7 +73,6 @@ class RequestForm(tk.Frame):
         # Reset the description text area
         self.desc_text.delete('1.0', tk.END)
 
-
     def fetch_room_ids(self):
         # Fetching room, floor, and building IDs along with their descriptive names
         query = """
@@ -97,7 +84,9 @@ class RequestForm(tk.Frame):
         """
         result = read_query(self.db_connection, query)
         self.room_details = {room['ROOM_DISPLAY']: (room['ROOM_ID'], room['BUILD_ID'], room['FLOOR_ID'], room['BUILD_NAME'], room['FLOOR_NO'], room['ROOM_NO']) for room in result}
-        self.room_id_dropdown['values'] = list(self.room_details.keys())
+        dropdown_values = ["Select Room"] + list(self.room_details.keys())
+        self.room_id_dropdown['values'] = dropdown_values
+        self.room_id_var.set("Select Room")
         if self.room_id_dropdown['values']:
             self.room_id_var.set(self.room_id_dropdown['values'][0])
             
@@ -144,59 +133,57 @@ class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('CMU Facilities Management Task System')
-        self.geometry('800x600')
-        # Create database connection
+        self.geometry('1024x720')
+        self.configure(bg='#003366')  # Dark blue background
+
         self.db_connection = create_db_connection()
 
-        # Create Tab Control with custom style
-        style = ttk.Style()
-        style.configure('TButton', font=('Helvetica', 12))  # Custom button style
-        style.map('TButton',
-                  foreground=[('pressed', 'black'), ('active', 'black')],
-                  background=[('pressed', '!disabled', 'gray'), ('active', 'gray')])
-
-        style.configure('Primary.TButton', foreground='black', background='sky blue', font=('Helvetica', 12))
-        style.configure('Secondary.TButton', foreground='black', background='gray', font=('Helvetica', 12))
-
         tab_control = ttk.Notebook(self, style='TButton.TNotebook')
-
-        # Tab 1: Requests (Using the RequestForm class)
         tab1 = ttk.Frame(tab_control)
-        tab_control.add(tab1, text='Request Form', padding=(10, 5))
+        tab_control.add(tab1, text='Request Form')
         self.request_form = RequestForm(tab1)
         self.request_form.pack(expand=True, fill='both', padx=20, pady=20)
 
-        # Tab 2: Employee Login
         tab2 = ttk.Frame(tab_control)
-        tab_control.add(tab2, text='Employee Login', padding=(10, 5))
+        tab_control.add(tab2, text='Employee Login')
         self.login_form = self.create_login_form(tab2)
         self.login_form.pack(expand=True, fill='both')
 
-        # Pack the tab control to the main window
         tab_control.pack(expand=1, fill="both")
 
-    def create_login_form(self, parent):
-        frame = tk.Frame(parent, bg='#f0f0f0')  # Light gray background
-        title = tk.Label(frame, text="Employee Login", font=("Helvetica", 16), bg='#f0f0f0')
-        title.pack(pady=20)
+    def create_login_form(self, parent): 
+        frame = tk.Frame(parent, bg='#003366')  # Updated to blue background
+        frame.pack(fill='both', expand=True)  # Make the frame expand to fill the window
+
+        # Header with application title, could be reused in other parts of the application
+        header = tk.Label(frame, text="CMU Facilities Management Task System", bg='#003366', fg='white', font=("Helvetica", 18))
+        header.pack(fill='x', pady=(10, 20))
+
+        title = tk.Label(frame, text="Employee Login", font=("Helvetica", 16), bg='#003366', fg='white')
+        title.pack(pady=10)
+
+        # Centering frame for the form elements
+        center_frame = tk.Frame(frame, bg='#003366')
+        center_frame.pack()
 
         # Username Entry
-        username_label = tk.Label(frame, text="Email:", bg='#f0f0f0')
-        username_label.pack()
-        self.username_entry = tk.Entry(frame, relief='ridge', bd=2, width=40)
+        username_label = tk.Label(center_frame, text="Email:", bg='#003366', fg='white', font=("Helvetica", 12))
+        username_label.pack(pady=(5, 2))
+        self.username_entry = tk.Entry(center_frame, font=('Helvetica', 12), relief='ridge', bd=2, width=30)
         self.username_entry.pack()
 
         # Password Entry
-        password_label = tk.Label(frame, text="Password:", bg='#f0f0f0')
-        password_label.pack()
-        self.password_entry = tk.Entry(frame, show="*", relief='ridge', bd=2, width=40)
+        password_label = tk.Label(center_frame, text="Password:", bg='#003366', fg='white', font=("Helvetica", 12))
+        password_label.pack(pady=(5, 2))
+        self.password_entry = tk.Entry(center_frame, show="*", font=('Helvetica', 12), relief='ridge', bd=2, width=30)
         self.password_entry.pack()
 
         # Login Button
-        login_button = ttk.Button(frame, text="Login", style='Secondary.TButton', cursor='hand2', command=self.validate_login)
+        login_button = ttk.Button(center_frame, text="Login", style='TButton', cursor='hand2', command=self.validate_login)
         login_button.pack(pady=20)
 
         return frame
+
 
     def validate_login(self):
         email = self.username_entry.get()

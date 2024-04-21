@@ -182,7 +182,6 @@ class EmployeeManagerInterface(tk.Toplevel):
         except Exception as e:
             messagebox.showerror("Error", "Failed to assign task: " + str(e))
         
-        
     def update_status(self):
         # Get the selected item in the Treeview
         selected_item = self.treeview.selection()[0]

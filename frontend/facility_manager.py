@@ -1,11 +1,11 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, simpledialog
 from backend.db import read_query, execute_query  # Assuming functions for database operations
-from datetime import datetime  # To handle dates
+from datetime import datetime  # To handle dates 
 
-class FacilityManagerInterface(tk.Toplevel):
+class FacilityManagerInterface(tk.Tk):
     def __init__(self, parent, first_name, last_name):
-        super().__init__(parent)
+        super().__init__()
         self.title("Facility Manager Dashboard")
         self.geometry("1200x600")
         self.parent = parent
@@ -17,25 +17,38 @@ class FacilityManagerInterface(tk.Toplevel):
 
     def create_widgets(self):
         # Header Frame
-        # Header Frame
         self.header_frame = ttk.Frame(self)
         self.header_frame.pack(fill='x', padx=10, pady=10)
 
         # Logged-in User Label
         self.logged_in_label = ttk.Label(self.header_frame, text=f"Logged in as: {self.first_name} {self.last_name}", font=('Arial', 12))
-        self.logged_in_label.pack(side='left')  # Placing the label on the left side
+        self.logged_in_label.pack(side='left')
 
         # Logout Button
         self.logout_button = ttk.Button(self.header_frame, text="Logout", command=self.logout)
-        self.logout_button.pack(side='right', pady=10)  # Placing the button on the right side
+        self.logout_button.pack(side='right', pady=10)
 
-     
-        # Main Content Frame
-        self.main_frame = ttk.Frame(self)
-        self.main_frame.pack(side='right', fill='both', expand=True)
+        # Tab Control
+        self.tab_control = ttk.Notebook(self)
+        self.tab_control.pack(fill='both', expand=True)
+
+        # Request Management Tab
+        self.requests_tab = ttk.Frame(self.tab_control)
+        self.tab_control.add(self.requests_tab, text='Requests')
+        self.create_requests_tab()
+
+        # Employee Management Tab
+        self.employee_tab = ttk.Frame(self.tab_control)
+        self.tab_control.add(self.employee_tab, text='Manage Employee')
+        self.create_employee_tab()
+
+    def create_requests_tab(self):
+        # Main Content Frame for Requests tab
+        self.requests_main_frame = ttk.Frame(self.requests_tab)
+        self.requests_main_frame.pack(fill='both', expand=True)
 
         # Frame for Treeview
-        self.tree_frame = ttk.Frame(self.main_frame)
+        self.tree_frame = ttk.Frame(self.requests_main_frame)
         self.tree_frame.pack(fill='both', expand=True)
 
         # Define Treeview columns
@@ -50,14 +63,37 @@ class FacilityManagerInterface(tk.Toplevel):
         self.treeview.heading('assigned_to', text='Assigned To')
 
         # Assign button
-        self.assign_button = ttk.Button(self.main_frame, text="Assign to Department", command=self.assign_request)
+        self.assign_button = ttk.Button(self.requests_main_frame, text="Assign to Department", command=self.assign_request)
         self.assign_button.pack(pady=10)
 
         # Combobox for Department selection
         self.department_var = tk.StringVar()
-        self.department_combobox = ttk.Combobox(self.main_frame, textvariable=self.department_var, state='readonly')
+        self.department_combobox = ttk.Combobox(self.requests_main_frame, textvariable=self.department_var, state='readonly')
         self.department_combobox.pack(pady=5)
         self.load_departments()
+
+    def create_employee_tab(self):
+        # Main Content Frame for Manage Employee tab
+        self.employee_main_frame = ttk.Frame(self.employee_tab)
+        self.employee_main_frame.pack(fill='both', expand=True)
+
+        # Employee Listbox with Scrollbar
+        self.employee_listbox = tk.Listbox(self.employee_main_frame, width=50, height=15)
+        self.employee_scroll = ttk.Scrollbar(self.employee_main_frame, orient='vertical', command=self.employee_listbox.yview)
+        self.employee_listbox.configure(yscrollcommand=self.employee_scroll.set)
+        self.employee_listbox.pack(side='left', fill='y', pady=10)
+        self.employee_scroll.pack(side='left', fill='y')
+
+        # Button Frame for Add, Update, Delete
+        self.button_frame = ttk.Frame(self.employee_main_frame)
+        self.button_frame.pack(side='right', fill='both', expand=True, padx=20)
+
+        self.add_button = ttk.Button(self.button_frame, text="Add New Employee", command=self.add_employee)
+        self.add_button.pack(fill='x', pady=10) 
+        self.delete_button = ttk.Button(self.button_frame, text="Delete Employee", command=self.delete_employee)
+        self.delete_button.pack(fill='x', pady=10)
+
+        self.load_employees_list()
 
     def load_requests(self):
         # Placeholder function to load requests
@@ -126,9 +162,61 @@ class FacilityManagerInterface(tk.Toplevel):
         # Add logout functionality here
         self.destroy()  # Close the dashboard window
         # You can add code here to handle the logout action, such as returning to the login screen
+    
+    def add_employee(self):
+        AddEmployeeDialog(self, title="Add New Employee")
+
+    def delete_employee(self):
+        selected = self.employee_listbox.curselection()
+        if not selected:
+            messagebox.showerror("Error", "No employee selected")
+            return
+        selected_id = self.employee_listbox.get(selected[0]).split(' - ')[0]
+
+        try:
+            archive_query = "UPDATE employee SET IsActive = FALSE WHERE EMP_ID = %s"
+            execute_query(self.parent.db_connection, archive_query, (selected_id,))
+            messagebox.showinfo("Success", "Employee has been archived and is no longer active.")
+            self.load_employees_list()  # Reload the list after archiving
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to archive employee: {str(e)}")
+
+    def load_employees_list(self):
+        # Placeholder function to load active employees into the listbox
+        query = "SELECT EMP_ID, EMP_FNAME, EMP_LNAME FROM employee WHERE IsActive = TRUE"
+        results = read_query(self.parent.db_connection, query)
+        self.employee_listbox.delete(0, tk.END)  # Clear existing entries before reloading
+        for result in results:
+            employee_entry = f"{result['EMP_ID']} - {result['EMP_FNAME']} {result['EMP_LNAME']}"
+            self.employee_listbox.insert('end', employee_entry)
 
 if __name__ == '__main__':
     root = tk.Tk()
     root.withdraw()  # Optionally hide the root window
     app = FacilityManagerInterface(root)
     app.mainloop()
+
+class AddEmployeeDialog(simpledialog.Dialog):
+    def __init__(self, parent, title=None):
+        super().__init__(parent, title=title)
+
+    def body(self, frame):
+        # Define labels and entry widgets for each field
+        labels = ['Global ID', 'Password', 'First Name', 'Last Name', 'Email', 'Contact', 'Role', 'Date of Joining', 'Address', 'Street', 'City', 'State', 'Zipcode']
+        self.entries = {}
+        for i, label in enumerate(labels):
+            ttk.Label(frame, text=f"{label}:").grid(row=i, column=0, sticky='w')
+            entry = ttk.Entry(frame)
+            entry.grid(row=i, column=1, padx=10, pady=2)
+            self.entries[label.lower().replace(' ', '_')] = entry
+        return self.entries['global_id']  # initial focus on the Global ID field
+
+    def apply(self):
+        entry_values = {key: entry.get() for key, entry in self.entries.items()}
+        # SQL to insert new employee
+        columns = ', '.join(entry_values.keys())
+        placeholders = ', '.join(['%s'] * len(entry_values))
+        query = f"INSERT INTO employee ({columns}) VALUES ({placeholders})"
+        execute_query(self.parent.parent.db_connection, query, tuple(entry_values.values()))
+        self.parent.load_employees_list()
+        
