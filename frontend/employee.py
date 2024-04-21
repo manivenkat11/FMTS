@@ -11,10 +11,28 @@ class EmployeeTaskInterface(tk.Toplevel):
         self.title("Employee Task Dashboard")
         self.geometry("1000x600")
 
+        # Configure styles
+        self.style = ttk.Style(self)
+        self.style.configure('Header.TFrame', background='#003366')  # A nice shade of blue
+        self.style.configure('Header.TLabel', background='#003366', foreground='white', font=('Arial', 12))
+        
         self.create_widgets()
         self.load_tasks()
 
     def create_widgets(self):
+        
+        # Header Frame with styled background
+        self.header_frame = ttk.Frame(self, style='Header.TFrame')
+        self.header_frame.pack(fill='x', padx=10, pady=10)
+
+        # Logged-in User Label with styled font and background
+        self.logged_in_label = ttk.Label(self.header_frame, text=f"Logged in as Employee", style='Header.TLabel')
+        self.logged_in_label.pack(side='left')
+
+        # Logout Button
+        self.logout_button = ttk.Button(self.header_frame, text="Logout", command=self.logout)
+        self.logout_button.pack(side='right', pady=10)
+        
         # Frame for Task Listing
         self.task_frame = ttk.Frame(self)
         self.task_frame.pack(fill='both', expand=True, pady=10)
@@ -60,6 +78,10 @@ class EmployeeTaskInterface(tk.Toplevel):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to update task status: {str(e)}")
 
+    def logout(self):
+        # Add logout functionality here
+        self.destroy()  # Close the dashboard window
+        # You can add code here to handle the logout action
 
 if __name__ == '__main__':
     root = tk.Tk()

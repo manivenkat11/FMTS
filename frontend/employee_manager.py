@@ -14,16 +14,21 @@ class EmployeeManagerInterface(tk.Toplevel):
         self.emp_id = emp_id
         self.fm_id = fm_id
 
+        # Configure styles
+        self.style = ttk.Style(self)
+        self.style.configure('Header.TFrame', background='#003366')  # A nice shade of blue
+        self.style.configure('Header.TLabel', background='#003366', foreground='white', font=('Arial', 12))
+        
         self.create_widgets()
         self.load_tasks()
 
     def create_widgets(self):
-        # Header Frame
-        self.header_frame = ttk.Frame(self)
+       # Header Frame with styled background
+        self.header_frame = ttk.Frame(self, style='Header.TFrame')
         self.header_frame.pack(fill='x', padx=10, pady=10)
 
-        # Logged-in User Label
-        self.logged_in_label = ttk.Label(self.header_frame, text=f"Logged in as: {self.first_name} {self.last_name}", font=('Arial', 12))
+        # Logged-in User Label with styled font and background
+        self.logged_in_label = ttk.Label(self.header_frame, text=f"Logged in as Employee Manager: {self.first_name} {self.last_name}", style='Header.TLabel')
         self.logged_in_label.pack(side='left')
 
         # Logout Button
