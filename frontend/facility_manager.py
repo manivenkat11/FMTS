@@ -109,15 +109,15 @@ class FacilityManagerInterface(tk.Tk):
         self.department_combobox['values'] = departments
 
     def assign_request(self):
-        # Get the selected item in the Treeview
-        selected_item = self.treeview.selection()[0]
+
+        selected_item = self.treeview.selection()
         if not selected_item:
             messagebox.showerror("Error", "Please select a request to assign.")
             return
 
+        selected_item = selected_item[0]  # Get the first selected item
         request_id = self.treeview.item(selected_item, 'values')[0]
-        fm_department_name = self.department_var.get()
-
+        fm_department_name = self.department_combobox.get()
         if not fm_department_name:
             messagebox.showerror("Error", "Please select a department to assign.")
             return
