@@ -7,7 +7,7 @@ class Dashboard(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        tk.Label(self, text="Task Dashboard").pack()
+        tk.Label(self, text="Task Dashboard 1").pack()
         self.task_list = tk.Listbox(self)
         self.task_list.pack()
 
