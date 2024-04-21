@@ -3,6 +3,9 @@ from tkinter import ttk, messagebox
 from backend.db import read_query, create_db_connection, execute_query  # Import database functions
 import re  # Import regular expressions for validation 
 from datetime import datetime  # To handle dates
+from frontend.facility_manager import FacilityManagerInterface
+from frontend.employee_manager import EmployeeManagerInterface
+from frontend.employee import EmployeeTaskInterface
 
 class RequestForm(tk.Frame):
     def __init__(self, parent):
@@ -177,24 +180,117 @@ class MainWindow(tk.Tk):
         title = tk.Label(frame, text="Employee Login", font=("Helvetica", 16), bg='#f0f0f0')
         title.pack(pady=20)
 
-        # Username
-        username_label = tk.Label(frame, text="Username:", bg='#f0f0f0')
+        # Username Entry
+        username_label = tk.Label(frame, text="Email:", bg='#f0f0f0')
         username_label.pack()
-        username_entry = tk.Entry(frame, relief='ridge', bd=2, width=40)  # Slightly rounded and increased width
-        username_entry.pack()
+        self.username_entry = tk.Entry(frame, relief='ridge', bd=2, width=40)
+        self.username_entry.pack()
 
-        # Password
+        # Password Entry
         password_label = tk.Label(frame, text="Password:", bg='#f0f0f0')
         password_label.pack()
-        password_entry = tk.Entry(frame, show="*", relief='ridge', bd=2, width=40)  # Slightly rounded and increased width
-        password_entry.pack()
+        self.password_entry = tk.Entry(frame, show="*", relief='ridge', bd=2, width=40)
+        self.password_entry.pack()
 
-        # Login Button with style
-        login_button = ttk.Button(frame, text="Login", style='Secondary.TButton', cursor='hand2')
+        # Login Button
+        login_button = ttk.Button(frame, text="Login", style='Secondary.TButton', cursor='hand2', command=self.validate_login)
         login_button.pack(pady=20)
 
         return frame
 
+    def validate_login(self):
+        email = self.username_entry.get()
+        password = self.password_entry.get()
+        print("Email:", email, "Password:", password)
+        query = "SELECT EMP_PASSWORD, EMP_ROLE FROM employee WHERE EMP_EMAIL = %s"
+        result = read_query(self.db_connection, query, (email,))
+        if result:
+            print("Query successful, result:", result)
+            if result[0]['EMP_PASSWORD'] == password:
+                self.role = result[0]['EMP_ROLE']
+                print("Password match, role:", self.role)
+                self.login_success()
+            else:
+                messagebox.showerror("Login Failed", "Invalid username or password")
+                print("Password mismatch")
+        else:
+            messagebox.showerror("Login Failed", "User not found")
+            print("Query returned no results")
+
+
+    def login_success(self):
+        print("Login success, opening window for role:", self.role)
+        first_name, last_name = self.get_employee_name(self.username_entry.get())
+        if self.role == 'Facilities Manager':
+            # Assuming the first name and last name are retrieved from the database after successful login
+            self.open_facility_manager_interface(first_name, last_name)
+        elif self.role == 'Employee Manager':
+            self.open_employee_manager_interface(first_name, last_name)
+        elif self.role == 'Employee':
+            self.open_employee_interface()
+        else:
+            print("Role not recognized:", self.role)
+
+    def get_employee_name(self, email):
+        query = "SELECT EMP_FNAME, EMP_LNAME FROM employee WHERE EMP_EMAIL = %s"
+        result = read_query(self.db_connection, query, (email,))
+        if result:
+            return result[0]['EMP_FNAME'], result[0]['EMP_LNAME']
+        else:
+            return None, None
+
+    def open_facility_manager_interface(self, first_name, last_name):
+        fm_window = FacilityManagerInterface(self, first_name, last_name)
+        fm_window.grab_set() 
+
+    def open_employee_manager_interface(self, first_name, last_name):
+        email = self.username_entry.get()
+        print("Opening Employee Manager Interface for:", email)
+        emp_id, fm_id = self.get_employee_manager_ids(email)
+        print("Employee ID and FM ID:", emp_id, fm_id)
+        em_window = EmployeeManagerInterface(self, first_name, last_name, emp_id, fm_id) 
+        em_window.grab_set() 
+        
+    def get_employee_manager_ids(self, email):
+        # Fetch EMP_ID and FM_ID for the logged-in Employee Manager
+        query = """
+        SELECT e.EMP_ID, ed.FM_ID
+        FROM employee e
+        JOIN emp_department ed ON e.EMP_ID = ed.EMP_ID
+        WHERE e.EMP_EMAIL = %s
+        """
+        result = read_query(self.db_connection, query, (email,))  # Ensure email is passed as a tuple
+        print("Query result:", result)
+        if result and len(result) > 0:
+            return result[0]['EMP_ID'], result[0]['FM_ID']
+        else:
+            return None, None
+ 
+    def open_employee_interface(self):
+        email = self.username_entry.get()
+        print("Opening Employee Task Interface for:", email)
+        emp_id = self.get_employee_id(email)
+        print("Employee ID:", emp_id)
+        emp_window = EmployeeTaskInterface(self, emp_id)
+        emp_window.grab_set()
+
+    def get_employee_id(self, email):
+        """
+        Fetches the employee ID for a given email.
+
+        Args:
+        email (str): The email of the employee.
+
+        Returns:
+        int: The employee ID, or None if not found.
+        """
+        query = "SELECT EMP_ID FROM employee WHERE EMP_EMAIL = %s"
+        result = read_query(self.db_connection, query, (email,))
+        if result:
+            return result[0]['EMP_ID']  # Assuming EMP_ID is the first column in the result
+        else:
+            return None
+    
 if __name__ == '__main__':
     app = MainWindow()
     app.mainloop()

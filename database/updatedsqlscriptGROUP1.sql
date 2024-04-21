@@ -2,7 +2,7 @@
 # CMU FACILITIES MANAGEMENT SYSTEM SQL SCRIPTS
 # GROUP-1
 # FOR DROPPING TABLES
-
+use sp2024bis698g1s;
 DROP TABLE IF EXISTS TASK_UPDATE;
 DROP TABLE IF EXISTS TASK;
 DROP TABLE IF EXISTS CATEGORY;
@@ -202,6 +202,7 @@ DROP TABLE IF EXISTS EMPLOYEE;
 CREATE TABLE EMPLOYEE (
     EMP_ID INT PRIMARY KEY,
     EMP_GLOBALID VARCHAR(100),
+    EMP_PASSWORD VARCHAR(20),
     EMP_FNAME VARCHAR(100),
     EMP_LNAME VARCHAR(100),
     EMP_EMAIL VARCHAR(100),
@@ -212,42 +213,42 @@ CREATE TABLE EMPLOYEE (
     EMP_STREET VARCHAR(100),
     EMP_CITY VARCHAR(100),
     EMP_STATE VARCHAR(100),
-    EMP_ZIPCODE VARCHAR(20)
+    EMP_ZIPCODE VARCHAR(20),
 );
 
 # INSERTING VALUES INTO EMPLOYEE TABLE
-INSERT INTO EMPLOYEE (EMP_ID, EMP_GLOBALID, EMP_FNAME, EMP_LNAME, EMP_EMAIL, EMP_CONTACT, EMP_ROLE, EMP_DOJ, EMP_ADDRESS, EMP_STREET, EMP_CITY, EMP_STATE, EMP_ZIPCODE)
+INSERT INTO EMPLOYEE (EMP_ID, EMP_GLOBALID,EMP_PASSWORD, EMP_FNAME, EMP_LNAME, EMP_EMAIL, EMP_CONTACT, EMP_ROLE, EMP_DOJ, EMP_ADDRESS, EMP_STREET, EMP_CITY, EMP_STATE, EMP_ZIPCODE)
 VALUES
-    (201, 'EMP_001', 'John', 'Doe', 'john.doe@cmich.edu', '+1234567890', 'Facilities Manager', '2023-01-01', '123 Main St', 'Sunset Blvd', 'Los Angeles', 'CA', '90001'),
-    (202, 'EMP_002', 'Jane', 'Smith', 'jane.smith@cmich.edu', '+1987654321', 'Maintenance Technician', '2023-01-15', '456 Elm St', 'Ocean Ave', 'Miami', 'FL', '33101'),
-    (203, 'EMP_003', 'Michael', 'Johnson', 'michael.johnson@cmich.edu', '+1765432987', 'Groundskeeper', '2023-02-01', '789 Oak St', 'Broadway', 'New York', 'NY', '10001'),
-    (204, 'EMP_004', 'Emily', 'Brown', 'emily.brown@cmich.edu', '+1654321987', 'Plumber', '2023-02-15', '101 Pine St', 'Main St', 'Chicago', 'IL', '60601'),
-    (205, 'EMP_005', 'David', 'Martinez', 'david.martinez@cmich.edu', '+1543219876', 'Electrician', '2023-03-01', '222 Cedar St', 'Market St', 'San Francisco', 'CA', '94101'),
-    (206, 'EMP_006', 'Sarah', 'Wilson', 'sarah.wilson@cmich.edu', '+1432198765', 'Security Officer', '2023-03-15', '333 Maple St', 'Park Ave', 'Boston', 'MA', '02101'),
-    (207, 'EMP_007', 'Christopher', 'Anderson', 'christopher.anderson@cmich.edu', '+1321987654', 'HVAC Technician', '2023-04-01', '444 Walnut St', 'Lincoln St', 'Seattle', 'WA', '98101'),
-    (208, 'EMP_008', 'Jessica', 'Taylor', 'jessica.taylor@cmich.edu', '+1219876543', 'Carpenter', '2023-04-15', '555 Cherry St', 'Washington St', 'Philadelphia', 'PA', '19101'),
-    (209, 'EMP_009', 'Daniel', 'Thomas', 'daniel.thomas@cmich.edu', '+1198765432', 'Painter', '2023-05-01', '666 Peach St', 'Elm St', 'Dallas', 'TX', '75201'),
-    (210, 'EMP_010', 'Ashley', 'Hernandez', 'ashley.hernandez@cmich.edu', '+1987654321', 'Janitor', '2023-05-15', '777 Plum St', 'Spring St', 'Atlanta', 'GA', '30301'),
-    (211, 'EMP_011', 'Matthew', 'Young', 'matthew.young@cmich.edu', '+1876543210', 'Facilities Coordinator', '2023-06-01', '888 Apple St', 'King St', 'Houston', 'TX', '77001'),
-    (212, 'EMP_012', 'Amanda', 'King', 'amanda.king@cmich.edu', '+1765432109', 'Maintenance Supervisor', '2023-06-15', '999 Banana St', 'Highland Ave', 'Denver', 'CO', '80201'),
-    (213, 'EMP_013', 'James', 'Lee', 'james.lee@cmich.edu', '+1654321098', 'Grounds Supervisor', '2023-07-01', '1011 Orange St', 'Forest Ave', 'Phoenix', 'AZ', '85001'),
-    (214, 'EMP_014', 'Jennifer', 'Gonzalez', 'jennifer.gonzalez@cmich.edu', '+1543210987', 'Plumbing Supervisor', '2023-07-15', '1212 Lemon St', 'Park Pl', 'San Diego', 'CA', '92101'),
-    (215, 'EMP_015', 'Ryan', 'Perez', 'ryan.perez@cmich.edu', '+1432109876', 'Electrical Supervisor', '2023-08-01', '1313 Lime St', 'Oak St', 'Portland', 'OR', '97201'),
-    (216, 'EMP_016', 'Emma', 'Rodriguez', 'emma.rodriguez@cmich.edu', '+1321098765', 'Security Supervisor', '2023-08-15', '1414 Grape St', 'Madison St', 'Las Vegas', 'NV', '89101'),
-    (217, 'EMP_017', 'Noah', 'Martinez', 'noah.martinez@cmich.edu', '+1210987654', 'HVAC Supervisor', '2023-09-01', '1515 Olive St', 'Franklin St', 'Miami', 'FL', '33101'),
-    (218, 'EMP_018', 'Olivia', 'Lopez', 'olivia.lopez@cmich.edu', '+1109876543', 'Carpentry Supervisor', '2023-09-15', '1616 Fig St', 'Jefferson St', 'Chicago', 'IL', '60601'),
-    (219, 'EMP_019', 'Ethan', 'Gonzalez', 'ethan.gonzalez@cmich.edu', '+1098765432', 'Painting Supervisor', '2023-10-01', '1717 Pear St', 'Monroe St', 'Boston', 'MA', '02101'),
-    (220, 'EMP_020', 'Isabella', 'Hernandez', 'isabella.hernandez@cmich.edu', '+1987654321', 'Janitorial Supervisor', '2023-10-15', '1818 Berry St', 'Jackson St', 'Philadelphia', 'PA', '19101'),
-    (221, 'EMP_021', 'Benjamin', 'Tran', 'benjamin.tran@cmich.edu', '+1987654321', 'Grounds Technician', '2024-04-01', '2829 Orange St', 'Forest Ave', 'Chicago', 'IL', '60601'),
-    (222, 'EMP_023', 'Sophia', 'Rodriguez', 'sophia.rodriguez@cmich.edu', '+1765432109', 'Security Guard', '2023-11-15', '1920 Apple St', 'Adams St', 'Seattle', 'WA', '98101'),
-    (223, 'EMP_024', 'Oliver', 'Lee', 'oliver.lee@cmich.edu', '+1654321098', 'Plumbing Assistant', '2023-12-01', '2021 Banana St', 'Jefferson St', 'Denver', 'CO', '80201'),
-    (224, 'EMP_025', 'Emma', 'Chen', 'emma.chen@cmich.edu', '+1543210987', 'Electrician Helper', '2023-12-15', '2122 Cherry St', 'Monroe St', 'Phoenix', 'AZ', '85001'),
-    (225, 'EMP_026', 'William', 'Wong', 'william.wong@cmich.edu', '+1432109876', 'Maintenance Worker', '2024-01-01', '2223 Grape St', 'Madison St', 'San Francisco', 'CA', '94101'),
-    (226, 'EMP_027', 'Amelia', 'Garcia', 'amelia.garcia@cmich.edu', '+1321098765', 'Facilities Assistant', '2024-01-15', '2324 Elm St', 'Washington St', 'Houston', 'TX', '77001'),
-    (227, 'EMP_028', 'Elijah', 'Martinez', 'elijah.martinez@cmich.edu', '+1210987654', 'Custodian', '2024-02-01', '2425 Fig St', 'Park Pl', 'Miami', 'FL', '33101'),
-    (228, 'EMP_029', 'Ava', 'Lopez', 'ava.lopez@cmich.edu', '+1109876543', 'Grounds Worker', '2024-02-15', '2526 Grape St', 'Ocean Ave', 'Dallas', 'TX', '75201'),
-    (229, 'EMP_030', 'Alexander', 'Nguyen', 'alexander.nguyen@cmich.edu', '+1098765432', 'Janitorial Assistant', '2024-03-01', '2627 Lemon St', 'Broadway', 'Atlanta', 'GA', '30301'),
-    (230, 'EMP_031', 'Charlotte', 'Kim', 'charlotte.kim@cmich.edu', '+1234567890', 'Maintenance Helper', '2024-03-15', '2728 Lime St', 'Lincoln St', 'Boston', 'MA', '02101');
+    (201, 'EMP_001', 'Test@12345', 'John', 'Doe', 'john.doe@cmich.edu', '+1234567890', 'Facilities Manager', '2023-01-01', '123 Main St', 'Sunset Blvd', 'Los Angeles', 'CA', '90001'),
+    (202, 'EMP_002', 'Test@12345', 'Jane', 'Smith', 'jane.smith@cmich.edu', '+1987654321', 'Employee Manager', '2023-01-15', '456 Elm St', 'Ocean Ave', 'Miami', 'FL', '33101'),
+    (203, 'EMP_003', 'Test@12345', 'Michael', 'Johnson', 'michael.johnson@cmich.edu', '+1765432987', 'Employee Manager', '2023-02-01', '789 Oak St', 'Broadway', 'New York', 'NY', '10001'),
+    (204, 'EMP_004', 'Test@12345', 'Emily', 'Brown', 'emily.brown@cmich.edu', '+1654321987', 'Employee Manager', '2023-02-15', '101 Pine St', 'Main St', 'Chicago', 'IL', '60601'),
+    (205, 'EMP_005', 'Test@12345', 'David', 'Martinez', 'david.martinez@cmich.edu', '+1543219876', 'Employee Manager', '2023-03-01', '222 Cedar St', 'Market St', 'San Francisco', 'CA', '94101'),
+    (206, 'EMP_006', 'Test@12345', 'Sarah', 'Wilson', 'sarah.wilson@cmich.edu', '+1432198765', 'Employee Manager', '2023-03-15', '333 Maple St', 'Park Ave', 'Boston', 'MA', '02101'),
+    (207, 'EMP_007', 'Test@12345', 'Christopher', 'Anderson', 'christopher.anderson@cmich.edu', '+1321987654', 'Employee Manager', '2023-04-01', '444 Walnut St', 'Lincoln St', 'Seattle', 'WA', '98101'),
+    (208, 'EMP_008', 'Test@12345', 'Jessica', 'Taylor', 'jessica.taylor@cmich.edu', '+1219876543', 'Employee', '2023-04-15', '555 Cherry St', 'Washington St', 'Philadelphia', 'PA', '19101'),
+    (209, 'EMP_009', 'Test@12345', 'Daniel', 'Thomas', 'daniel.thomas@cmich.edu', '+1198765432', 'Employee', '2023-05-01', '666 Peach St', 'Elm St', 'Dallas', 'TX', '75201'),
+    (210, 'EMP_010', 'Test@12345', 'Ashley', 'Hernandez', 'ashley.hernandez@cmich.edu', '+1987654321', 'Employee', '2023-05-15', '777 Plum St', 'Spring St', 'Atlanta', 'GA', '30301'),
+    (211, 'EMP_011', 'Test@12345', 'Matthew', 'Young', 'matthew.young@cmich.edu', '+1876543210', 'Employee Manager', '2023-06-01', '888 Apple St', 'King St', 'Houston', 'TX', '77001'),
+    (212, 'EMP_012', 'Test@12345', 'Amanda', 'King', 'amanda.king@cmich.edu', '+1765432109', 'Employee', '2023-06-15', '999 Banana St', 'Highland Ave', 'Denver', 'CO', '80201'),
+    (213, 'EMP_013', 'Test@12345', 'James', 'Lee', 'james.lee@cmich.edu', '+1654321098', 'Employee Manager', '2023-07-01', '1011 Orange St', 'Forest Ave', 'Phoenix', 'AZ', '85001'),
+    (214, 'EMP_014', 'Test@12345', 'Jennifer', 'Gonzalez', 'jennifer.gonzalez@cmich.edu', '+1543210987', 'Employee', '2023-07-15', '1212 Lemon St', 'Park Pl', 'San Diego', 'CA', '92101'),
+    (215, 'EMP_015', 'Test@12345', 'Ryan', 'Perez', 'ryan.perez@cmich.edu', '+1432109876', 'Employee Manager', '2023-08-01', '1313 Lime St', 'Oak St', 'Portland', 'OR', '97201'),
+    (216, 'EMP_016', 'Test@12345', 'Emma', 'Rodriguez', 'emma.rodriguez@cmich.edu', '+1321098765', 'Employee', '2023-08-15', '1414 Grape St', 'Madison St', 'Las Vegas', 'NV', '89101'),
+    (217, 'EMP_017', 'Test@12345', 'Noah', 'Martinez', 'noah.martinez@cmich.edu', '+1210987654', 'Employee', '2023-09-01', '1515 Olive St', 'Franklin St', 'Miami', 'FL', '33101'),
+    (218, 'EMP_018', 'Test@12345', 'Olivia', 'Lopez', 'olivia.lopez@cmich.edu', '+1109876543', 'Employee', '2023-09-15', '1616 Fig St', 'Jefferson St', 'Chicago', 'IL', '60601'),
+    (219, 'EMP_019', 'Test@12345', 'Ethan', 'Gonzalez', 'ethan.gonzalez@cmich.edu', '+1098765432', 'Employee Manager', '2023-10-01', '1717 Pear St', 'Monroe St', 'Boston', 'MA', '02101'),
+    (220, 'EMP_020', 'Test@12345', 'Isabella', 'Hernandez', 'isabella.hernandez@cmich.edu', '+1987654321', 'Employee', '2023-10-15', '1818 Berry St', 'Jackson St', 'Philadelphia', 'PA', '19101'),
+    (221, 'EMP_021', 'Test@12345', 'Benjamin', 'Tran', 'benjamin.tran@cmich.edu', '+1987654321', 'Employee', '2024-04-01', '2829 Orange St', 'Forest Ave', 'Chicago', 'IL', '60601'),
+    (222, 'EMP_023', 'Test@12345', 'Sophia', 'Rodriguez', 'sophia.rodriguez@cmich.edu', '+1765432109', 'Employee', '2023-11-15', '1920 Apple St', 'Adams St', 'Seattle', 'WA', '98101'),
+    (223, 'EMP_024', 'Test@12345', 'Oliver', 'Lee', 'oliver.lee@cmich.edu', '+1654321098', 'Employee Manager', '2023-12-01', '2021 Banana St', 'Jefferson St', 'Denver', 'CO', '80201'),
+    (224, 'EMP_025', 'Test@12345', 'Emma', 'Chen', 'emma.chen@cmich.edu', '+1543210987', 'Employee Manager', '2023-12-15', '2122 Cherry St', 'Monroe St', 'Phoenix', 'AZ', '85001'),
+    (225, 'EMP_026', 'Test@12345', 'William', 'Wong', 'william.wong@cmich.edu', '+1432109876', 'Employee', '2024-01-01', '2223 Grape St', 'Madison St', 'San Francisco', 'CA', '94101'),
+    (226, 'EMP_027', 'Test@12345', 'Amelia', 'Garcia', 'amelia.garcia@cmich.edu', '+1321098765', 'Employee', '2024-01-15', '2324 Elm St', 'Washington St', 'Houston', 'TX', '77001'),
+    (227, 'EMP_028', 'Test@12345', 'Elijah', 'Martinez', 'elijah.martinez@cmich.edu', '+1210987654', 'Employee Manager', '2024-02-01', '2425 Fig St', 'Park Pl', 'Miami', 'FL', '33101'),
+    (228, 'EMP_029', 'Test@12345', 'Ava', 'Lopez', 'ava.lopez@cmich.edu', '+1109876543', 'Employee Manager', '2024-02-15', '2526 Grape St', 'Ocean Ave', 'Dallas', 'TX', '75201'),
+    (229, 'EMP_030', 'Test@12345', 'Alexander', 'Nguyen', 'alexander.nguyen@cmich.edu', '+1098765432', 'Employee Manager', '2024-03-01', '2627 Lemon St', 'Broadway', 'Atlanta', 'GA', '30301'),
+    (230, 'EMP_031', 'Test@12345', 'Charlotte', 'Kim', 'charlotte.kim@cmich.edu', '+1234567890', 'Employee Manager', '2024-03-15', '2728 Lime St', 'Lincoln St', 'Boston', 'MA', '02101');
 
 # CREATING SKILL TABLE
 DROP TABLE IF EXISTS SKILL;
@@ -468,7 +469,7 @@ VALUES
 # CREATING TASK TABLE
 DROP TABLE IF EXISTS TASK;
 CREATE TABLE TASK (
-    TASK_ID INT PRIMARY KEY,
+    TASK_ID INT AUTO_INCREMENT PRIMARY KEY,
     REQ_ID INT,
     ASSGND_BY_EMP_ID INT,
     ASSGND_TO_EMP_ID INT, 
@@ -565,8 +566,8 @@ VALUES
     (1030, 30, 230, 'Conducted preventive maintenance on chilled water systems.', '2024-02-21');
 
 ALTER TABLE TASK
-ADD FOREIGN KEY (ASSGND_BY_EMP_ID) REFERENCES EMPLOYEE(EMP_ID),
-ADD FOREIGN KEY (ASSGND_TO_EMP_ID) REFERENCES EMPLOYEE(EMP_ID);
+ADD COLUMN ASSGND_BY_EMP_ID INT NULL,
+ADD COLUMN ASSGND_TO_EMP_ID INT NULL; 
 
 ALTER TABLE TASK
 ADD FOREIGN KEY (REQ_ID) REFERENCES REQUESTOR(REQ_ID),
