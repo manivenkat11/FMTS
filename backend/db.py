@@ -7,7 +7,7 @@ def create_db_connection():
         user="root",  # Replace with your MySQL username
         passwd="password",  # Replace with your MySQL password
         database="sp2024bis698g1s"  # Replace with your database name
-    )
+    )   
 
 # Function to execute a query (CREATE, UPDATE, DELETE)
 def execute_query(connection, query, data=None):

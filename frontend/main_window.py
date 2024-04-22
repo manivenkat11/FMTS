@@ -127,8 +127,7 @@ class RequestForm(tk.Frame):
             messagebox.showerror("Invalid Input", "Description must not exceed 300 characters.")
             return False
         return True
-
-            
+  
 class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
