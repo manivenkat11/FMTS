@@ -3,10 +3,10 @@ import mysql.connector
 # Establish a database connection
 def create_db_connection():
     return mysql.connector.connect(
-        host="localhost",
-        user="root",  # Replace with your MySQL username
-        passwd="password",  # Replace with your MySQL password
-        database="sp2024bis698g1s"  # Replace with your database name
+        host="141.209.241.91",
+        user="sp2024bis698g1",  # MySQL username
+        passwd="warm",  # MySQL password
+        database="sp2024bis698g1s"  # database name
     )   
 
 # Function to execute a query (CREATE, UPDATE, DELETE)

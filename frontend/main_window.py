@@ -12,6 +12,7 @@ class RequestForm(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent, bg='#f0f0f0')
         self.db_connection = create_db_connection()
+        print("Request Form initialized")
         self.create_widgets()
 
     def create_widgets(self):
